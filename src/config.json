@@ -2,9 +2,14 @@
     "embedLinkMap": {
         "tiktok.com": "vxtiktok.com",
         "twitter.com": "fxtwitter.com",
-        "x.com": "fxtwitter.com"
+        "x.com": "fxtwitter.com",
+        "instagram.com": "ddinstagram.com"
     },
-    "deleteOriginalMessage": false,
-    "deleteLinkOnlyOriginalMessage": true,
-    "mentionOriginalSender": true
+
+    "deleteOriginalMessage": true,
+    "includeOriginalMessage": true,
+    "mentionOriginalMessageAuthor": true,
+
+    "applicationId": null,
+    "discordToken": null
 }
