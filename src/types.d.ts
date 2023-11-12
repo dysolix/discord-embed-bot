@@ -8,4 +8,11 @@ declare global {
     } & { execute: SlashCommandExecuteFunction }
 
     type SlashCommandExecuteFunction = (interaction: ChatInputCommandInteraction<CacheType>) => MaybePromise<void>
+
+    type BotConfig = {
+        embedLinkMap: Record<string, string>
+        deleteOriginalMessage: boolean
+        deleteLinkOnlyOriginalMessage: boolean
+        mentionOriginalSender: boolean
+    }
 }

@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from "discord.js";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import fs from "node:fs/promises"
 
 export function getDirectoryName(importMeta: ImportMeta) {
@@ -23,7 +23,7 @@ export async function importDirectory(directoryPath: string, recursive = true) {
     const exports: any[] = [];
     for(const entry of directoryEntries) {
         if(entry.isFile()) {
-            const exp = await import(path.join(directoryPath, entry.name));
+            const exp = await import(pathToFileURL(path.join(directoryPath, entry.name)).toString());
             exports.push(exp);
         } else if(entry.isDirectory() && recursive) {
             const exps = await importDirectory(path.join(directoryPath, entry.name), recursive);
