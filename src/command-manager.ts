@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { getDirectoryName } from './util.js';
-import { Collection } from 'discord.js';
+import { ChatInputCommandInteraction, Collection } from 'discord.js';
 import { Client } from './bot.js';
 
 const __dirname = getDirectoryName(import.meta);
@@ -17,6 +17,19 @@ export function getCommands() {
 }
 
 Client.once("interactionCreate", async interaction => {
-    if (!interaction.isCommand())
+    if (!interaction.isCommand() || !interaction.isChatInputCommand())
         return;
+
+    const command = commands.get(interaction.commandName);
+    if (!command) {
+        console.error(`Command '${interaction.commandName}' does not exist.`)
+        return;
+    }
+
+    try {
+        await command.execute(interaction);
+    } catch (e) {
+        console.error(e);
+        await interaction.reply({ content: "An error occurred while executing the command.", ephemeral: true })
+    }
 })
