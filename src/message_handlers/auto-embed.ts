@@ -52,6 +52,8 @@ Client.on(Events.MessageCreate, async message => {
     const reactions = await sentMessage.awaitReactions({ filter: (reaction, user) => reaction.emoji.name === "❌" && user.id === message.author.id, max: 1, time: 30000 });
     if(reactions.size > 0)
         await sentMessage.delete();
-    else
+    else {
         await sentMessage.edit(sentMessage.content.replace("\n\nYou have 30 seconds to react with ❌ to delete this message.", ""));
+        await sentMessage.reactions.cache.find(reaction => reaction.emoji.name === "❌")?.users.remove();
+    }
 })
