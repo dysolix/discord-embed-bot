@@ -37,11 +37,11 @@ Client.on(Events.MessageCreate, async message => {
 
     if(config.includeOriginalMessage) {
         sentMessage = await message.channel.send({
-            content: finalMessage + (config.mentionOriginalMessageAuthor ? ` | <@${message.author.id}>` : "") + config.enableDeletion ? "\n\nYou have 30 seconds to react with ❌ to delete this message." : ""
+            content: finalMessage + (config.mentionOriginalMessageAuthor ? ` | <@${message.author.id}>` : "") + finalMessage + config.enableDeletion ? "\n\nYou have 30 seconds to react with ❌ to delete this message." : ""
         });
     } else {
         sentMessage = await message.channel.send({
-            content: embedTargetLinks.join("\n") + (config.mentionOriginalMessageAuthor ? `\n<@${message.author.id}>` : "") + config.enableDeletion ? "\n\nYou have 30 seconds to react with ❌ to delete this message." : ""
+            content: embedTargetLinks.join("\n") + (config.mentionOriginalMessageAuthor ? `\n<@${message.author.id}>` : "") + embedTargetLinks.join("\n") + config.enableDeletion ? "\n\nYou have 30 seconds to react with ❌ to delete this message." : ""
         });
     }
 
