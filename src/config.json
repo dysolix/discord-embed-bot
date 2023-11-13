@@ -6,6 +6,7 @@
         "instagram.com": "ddinstagram.com"
     },
 
+    "enableDeletion": true,
     "deleteOriginalMessage": true,
     "includeOriginalMessage": true,
     "mentionOriginalMessageAuthor": true,

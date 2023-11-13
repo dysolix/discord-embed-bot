@@ -19,6 +19,7 @@ export const Client = new DiscordClient({
         "Guilds",
         "GuildMessages",
         "MessageContent",
+        "GuildMessageReactions"
     ]
 });
 

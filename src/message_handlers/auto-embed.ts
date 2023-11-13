@@ -30,17 +30,28 @@ Client.on(Events.MessageCreate, async message => {
         return;
 
     if (config.deleteOriginalMessage)
-        await message.delete();
+       await message.delete();
 
     const finalMessage = messageLines.join("\n");
+    let sentMessage;
 
     if(config.includeOriginalMessage) {
-        await message.channel.send({
-            content: (config.mentionOriginalMessageAuthor ? `<@${message.author.id}> | ` : "") + finalMessage
+        sentMessage = await message.channel.send({
+            content: finalMessage + (config.mentionOriginalMessageAuthor ? ` | <@${message.author.id}>` : "") + config.enableDeletion ? "\n\nYou have 30 seconds to react with ❌ to delete this message." : ""
         });
     } else {
-        await message.channel.send({
-            content: (config.mentionOriginalMessageAuthor ? `<@${message.author.id}>\n` : "") + embedTargetLinks.join("\n")
+        sentMessage = await message.channel.send({
+            content: embedTargetLinks.join("\n") + (config.mentionOriginalMessageAuthor ? `\n<@${message.author.id}>` : "") + config.enableDeletion ? "\n\nYou have 30 seconds to react with ❌ to delete this message." : ""
         });
     }
+
+    if(!config.enableDeletion)
+        return;
+
+    await sentMessage.react("❌");
+    const reactions = await sentMessage.awaitReactions({ filter: (reaction, user) => reaction.emoji.name === "❌" && user.id === message.author.id, max: 1, time: 30000 });
+    if(reactions.size > 0)
+        await sentMessage.delete();
+    else
+        await sentMessage.edit(sentMessage.content.replace("\n\nYou have 30 seconds to react with ❌ to delete this message.", ""));
 })

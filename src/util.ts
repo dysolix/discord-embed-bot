@@ -2,6 +2,7 @@ import { SlashCommandBuilder } from "discord.js";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import fs from "node:fs/promises"
+import { ExecutableSlashCommand, SlashCommandExecuteFunction } from "./types.js";
 
 export function getDirectoryName(importMeta: ImportMeta) {
     return path.dirname(fileURLToPath(importMeta.url));
@@ -18,15 +19,15 @@ export function createSlashCommand(data: { name: string, description: string } |
     }
 }
 
-export async function importDirectory(directoryPath: string, recursive = true) {
-    const directoryEntries = await fs.readdir(directoryPath, { withFileTypes: true });
+export async function importDirectory(absoluteDirectoryPath: string, recursive = true) {
+    const directoryEntries = await fs.readdir(absoluteDirectoryPath, { withFileTypes: true });
     const exports: any[] = [];
     for(const entry of directoryEntries) {
         if(entry.isFile()) {
-            const exp = await import(pathToFileURL(path.join(directoryPath, entry.name)).toString());
+            const exp = await import(pathToFileURL(path.join(absoluteDirectoryPath, entry.name)).toString());
             exports.push(exp);
         } else if(entry.isDirectory() && recursive) {
-            const exps = await importDirectory(path.join(directoryPath, entry.name), recursive);
+            const exps = await importDirectory(path.join(absoluteDirectoryPath, entry.name), recursive);
             exports.push(...exps);
         }
     }

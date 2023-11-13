@@ -1,17 +1,16 @@
-import fs from 'fs/promises';
 import path from 'path';
-import { getDirectoryName } from './util.js';
-import { ChatInputCommandInteraction, Collection } from 'discord.js';
+import { getDirectoryName, importDirectory } from './util.js';
+import { Collection } from 'discord.js';
 import { Client } from './bot.js';
+import { ExecutableSlashCommand } from './types.js';
 
 const __dirname = getDirectoryName(import.meta);
-const commandFiles = await fs.readdir(path.join(__dirname, "./commands"), { withFileTypes: true }).then(entries => entries.filter(e => e.isFile()).map(e => e.name), err => []);
 const commands: Collection<string, ExecutableSlashCommand> = new Collection();
-for (const fileName of commandFiles) {
-    const command = await import(`./commands/${fileName}`).then(m => m.default) as ExecutableSlashCommand;
-    commands.set(command.data.name, command);
-}
-
+await importDirectory(path.join(__dirname, "./commands"))
+    .then(imports => imports.map(i => i.default))
+    .then(imports => imports.forEach(i => commands.set(i.data.name, i)))
+    .catch(() => { });
+    
 export function getCommands() {
     return commands;
 }
