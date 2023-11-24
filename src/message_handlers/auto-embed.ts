@@ -13,7 +13,7 @@ Client.on(Events.MessageCreate, async message => {
             try {
                 const url = new URL(msgPart);
                 const [_, replaceDomain] = Object.entries(config.embedLinkMap).find(([key, value]) => {
-                    return url.hostname.endsWith(key) && url.hostname !== value; 
+                    return url.hostname.endsWith(key) && !Object.values(config.embedLinkMap).includes(url.hostname);
                 }) as [string, string] ?? [null, null];
                 if (replaceDomain) {
                     embedTargetLinks.push(`https://${replaceDomain}${url.pathname}`);
@@ -22,7 +22,7 @@ Client.on(Events.MessageCreate, async message => {
                 }
             } catch { }
         }
-    
+
         messageLines[i] = msgParts.join(" ");
     }
 
