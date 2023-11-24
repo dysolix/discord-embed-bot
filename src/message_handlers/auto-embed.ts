@@ -12,9 +12,9 @@ Client.on(Events.MessageCreate, async message => {
             const msgPart = msgParts[msgPartIndex];
             try {
                 const url = new URL(msgPart);
-                const urlSplit = url.hostname.split(".");
-                const domain = urlSplit.at(-2) + "." + urlSplit.at(-1);
-                const [targetDomain, replaceDomain] = Object.entries(config.embedLinkMap).find(([x, y]) => domain === x) as [string, string] ?? [null, null];
+                const [_, replaceDomain] = Object.entries(config.embedLinkMap).find(([key, value]) => {
+                    return url.hostname.endsWith(key) && url.hostname !== value; 
+                }) as [string, string] ?? [null, null];
                 if (replaceDomain) {
                     embedTargetLinks.push(`https://${replaceDomain}${url.pathname}`);
                     msgParts[msgPartIndex] = `https://${replaceDomain}${url.pathname}`;
@@ -22,7 +22,7 @@ Client.on(Events.MessageCreate, async message => {
                 }
             } catch { }
         }
-
+    
         messageLines[i] = msgParts.join(" ");
     }
 
